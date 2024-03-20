@@ -16,8 +16,11 @@ namespace Treblecross
             Player player = new Player("Kim", PlayerType.Human, piece);
 
 
-            Console.Write(player.ToString());
+            Console.WriteLine(player.ToString());
 
+            ProgramEngine pe = new ProgramEngine();
+            var startNewGame = (StartNewGameDelegate)pe.DisplayMenu();
+            GameOperator gameOp = startNewGame();
 
         }
     }
