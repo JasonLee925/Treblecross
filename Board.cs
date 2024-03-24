@@ -11,6 +11,9 @@ namespace Treblecross
         public Board(int x, int y) {
             dimension_x = x;
             dimension_y = y;
+            // int[,] state = new int[x,y];
+            // GameState gameState = new GameState(state);
+            // currentState = state;
         }
         public Board(int x, int y, GameState state) {
             dimension_x = x;

@@ -28,6 +28,12 @@ namespace Treblecross
             }
             this.players = players;
             this.board = board;
+
+            // x, y = Readline();
+            
+            // update2DArray = validateMove(x, y)
+            // Gamestate state = new Gamestate(update2DArray) // create Gamestate
+            // updateBoard(state);
         }
 
         public void Init() {
