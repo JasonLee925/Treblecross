@@ -55,10 +55,41 @@ namespace Treblecross
             Piece = piece;
         }
 
-        public override string ToString()
-        {
-            return "[Player] Name: " + Name + ", PlayerType: " + PlayerType + ", Peice: " + Piece.Print();
+        /// <summary>
+        /// Create a computer player
+        /// </summary>
+        /// <returns>A Player object</returns>
+        public static Player CreateComputerPlayer() {
+            Piece piece = new Piece('▲', ConsoleColor.Gray);
+            return new Player("CPU", PlayerType.Cpu, piece);
         }
+
+        /// <summary>
+        /// Create a human player
+        /// </summary>
+        /// <returns>A Player object</returns>
+        public static Player CreateHumanPlayer() {
+            char mark  = 'X';
+            int colour = 15;
+            do {
+                Console.WriteLine("[Game] Enter a mark representing player-1? (example: X or O) ");
+            } while (!char.TryParse(Console.ReadLine(), out mark));
+            do {
+                Console.WriteLine("[Game] Enter a color representing player-1? ");
+                Console.WriteLine("Options: \r\n" +
+                    "0: black\r\n" + "9: blue\r\n" + "10: green\r\n" + "12: red\r\n" + "14: yellow\r\n" + "15: white"
+                    );
+            } while (!int.TryParse(Console.ReadLine(), out colour));
+
+            Piece peice = new Piece(mark, (ConsoleColor)colour);
+            return new Player("CPU", PlayerType.Human, peice);
+        }
+
+
+        // public override string ToString()
+        // {
+        //     return "[Player] Name: " + Name + ", PlayerType: " + PlayerType + ", Peice: " + Piece.Print();
+        // }
     }
     
 }
