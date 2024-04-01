@@ -1,9 +1,12 @@
+using System.Data.Common;
 using System.Reflection.Metadata;
+using System.Runtime.Intrinsics.Arm;
 
 namespace Treblecross
 {
     public enum GameMode
     {
+        None = -1, // temporary
         PvE = 0,
         PvP = 1,
     }
@@ -15,8 +18,18 @@ namespace Treblecross
         private Player[] players = new Player[2];
         private Board board;
 
-        public GameOperator(GameMode mode) {
-            Mode = mode;
+        public GameOperator() {
+            int mode = -1;
+            bool valid = false;
+            do {
+                Console.WriteLine("[Game] Choose mode? (0: PvE, 1: PvP) ");
+                valid = int.TryParse(Console.ReadLine(), out mode);
+                if (!Enum.IsDefined(typeof(GameMode), mode) || !valid) {
+                    Console.WriteLine("Wrong GameMode, please re-enter!");
+                    valid = false;
+                }
+            } while(!valid);
+            Mode = (GameMode) mode;
         }
 
         public GameOperator(GameMode mode, Player[] players, Board board)
@@ -36,10 +49,23 @@ namespace Treblecross
             // updateBoard(state);
         }
 
-        public void Init() {
+        protected void init() {
             // create players
+            if (Mode == GameMode.PvE) {
+                players.SetValue(Player.CreateComputerPlayer(), 0); // a gray ▲ 
+                players.SetValue(Player.CreateHumanPlayer(), 1);
+            } else { 
+                // PvP
+                players.SetValue(Player.CreateHumanPlayer(), 0);
+                players.SetValue(Player.CreateHumanPlayer(), 1);
+            }
+
             // prompt "board size"
-            // create board
+            int dx = 10;
+            do {
+                Console.WriteLine("[Game] What is your board size? (Enter a number that is <=5) ");
+            } while(!int.TryParse(Console.ReadLine(), out dx) || dx <= 5);
+            board = new Board(dx,1);
         }
 
         public void Start()
@@ -66,6 +92,11 @@ namespace Treblecross
     public class TreblecrossOperator : GameOperator
     {
         public override string GameId => "Treblecross";
+
+        public TreblecrossOperator() {
+            Console.WriteLine("Creating Treblecross ... ");
+            base.init();
+        }
 
         public TreblecrossOperator(GameMode mode, Player[] players, Board board) : base(mode, players, board) { }
 
@@ -101,4 +132,6 @@ namespace Treblecross
         }
     }
 
+
+    // public class ReversiOperator : GameOperator {}
 }
