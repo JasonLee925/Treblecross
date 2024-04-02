@@ -6,7 +6,7 @@ namespace Treblecross
         public readonly char Mark = 'X'; // default: X
         public readonly ConsoleColor Colour = ConsoleColor.White; // default: white
 
-        public string Label => Mark.ToString() + ((int)Colour).ToString();
+        public string Label => this.GetHashCode() + Mark.ToString() + ((int)Colour).ToString();
 
         public Piece(char mark)
         {
@@ -69,13 +69,23 @@ namespace Treblecross
         /// </summary>
         /// <returns>A Player object</returns>
         public static Player CreateHumanPlayer() {
-            Piece peice = createPeice(false);
-            return new Player("CPU", PlayerType.Human, peice);
+            Piece piece = createPeice(false);
+            return createPlayer(piece);
         }
 
         public static Player CreateHumanPlayerWithCustomPeice() {
-            Piece peice = createPeice(true);
-            return new Player("CPU", PlayerType.Human, peice);
+            Piece piece = createPeice(true);
+            return createPlayer(piece);
+        }
+
+        private static Player createPlayer (Piece piece) {
+            string name;
+            do {
+                Console.WriteLine("[Game] Enter player name? (connot be empty)");
+                name = Console.ReadLine();
+            } while (name == null || name == "");
+            
+            return new Player(name, PlayerType.Human, piece);
         }
 
         private static Piece createPeice(bool customPeice) {
