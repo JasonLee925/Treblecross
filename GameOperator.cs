@@ -52,7 +52,7 @@ namespace Treblecross
         protected void init() {
             // create players
             if (Mode == GameMode.PvE) {
-                players.SetValue(Player.CreateComputerPlayer(), 0); // a gray ▲ 
+                players.SetValue(Player.CreateComputerPlayer(), 0); // a white 'X'
                 players.SetValue(Player.CreateHumanPlayer(), 1);
             } else { 
                 // PvP

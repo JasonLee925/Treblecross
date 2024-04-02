@@ -60,7 +60,7 @@ namespace Treblecross
         /// </summary>
         /// <returns>A Player object</returns>
         public static Player CreateComputerPlayer() {
-            Piece piece = new Piece('▲', ConsoleColor.Gray);
+            Piece piece = new Piece('X', ConsoleColor.White);
             return new Player("CPU", PlayerType.Cpu, piece);
         }
 
@@ -69,22 +69,35 @@ namespace Treblecross
         /// </summary>
         /// <returns>A Player object</returns>
         public static Player CreateHumanPlayer() {
-            char mark  = 'X';
-            int colour = 15;
-            do {
-                Console.WriteLine("[Game] Enter a mark representing player-1? (example: X or O) ");
-            } while (!char.TryParse(Console.ReadLine(), out mark));
-            do {
-                Console.WriteLine("[Game] Enter a color representing player-1? ");
-                Console.WriteLine("Options: \r\n" +
-                    "0: black\r\n" + "9: blue\r\n" + "10: green\r\n" + "12: red\r\n" + "14: yellow\r\n" + "15: white"
-                    );
-            } while (!int.TryParse(Console.ReadLine(), out colour));
-
-            Piece peice = new Piece(mark, (ConsoleColor)colour);
+            Piece peice = createPeice(false);
             return new Player("CPU", PlayerType.Human, peice);
         }
 
+        public static Player CreateHumanPlayerWithCustomPeice() {
+            Piece peice = createPeice(true);
+            return new Player("CPU", PlayerType.Human, peice);
+        }
+
+        private static Piece createPeice(bool customPeice) {
+            // default settings
+            char mark  = 'X'; 
+            int colour = 15; 
+
+            if (customPeice) {
+                do {
+                    Console.WriteLine("[Game] Enter a mark representing player-1? (example: X or O) ");
+                } while (!char.TryParse(Console.ReadLine(), out mark));
+
+                do {
+                    Console.WriteLine("[Game] Enter a color representing player-1? ");
+                    Console.WriteLine("Options: \r\n" +
+                        "0: black\r\n" + "9: blue\r\n" + "10: green\r\n" + "12: red\r\n" + "14: yellow\r\n" + "15: white"
+                        );
+                } while (!int.TryParse(Console.ReadLine(), out colour));
+            } 
+
+            return new Piece(mark, (ConsoleColor)colour);
+        }
 
         // public override string ToString()
         // {
