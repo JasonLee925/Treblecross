@@ -1,4 +1,3 @@
-
 namespace Treblecross
 {
     //     public delegate GameOperator StartNewGameDelegate();
@@ -14,17 +13,12 @@ namespace Treblecross
         Quit = 3,
     }
 
-    public enum GlobalCommend
-    {
-        save,
-        hint,
-        undo,
-        redo,
-        quit,
-    }
-
     public class ProgramEngine
     {
+        public static string GlobalCommends = "save: Save game, the command will save the game of current state to a file which can be loaded from the menu.\r\n" +
+                        "hint: Return a hint about the game. It also reminds user of what commands are available.\r\n" +
+                        "quit: Quit the game without saving.";
+
         public Delegate DisplayMenu()
         {
             int action = -1;
@@ -32,7 +26,7 @@ namespace Treblecross
 
             do
             {
-                Console.WriteLine("[Menu] Choose an action? (0: Start a new game, 1: Load game, 2: Quit!)");
+                Console.WriteLine("[Menu] Choose an action? (0: Start a new game, 1: Load game, 2: Check global commands, 3: Quit!)");
                 valid = int.TryParse(Console.ReadLine(), out action);
                 if (!Enum.IsDefined(typeof(MenuAction), action) || !valid)
                 {
@@ -50,22 +44,17 @@ namespace Treblecross
                 case MenuAction.AvailableCommends:
                     // prompt available commends
                     Console.WriteLine("[Menu] In the game, there are some global commands that are available to use:");
-                    Console.WriteLine(
-                        "save: Save game, the command will save the game of current state to a file which can be loaded from the menu.\r\n" +
-                        "hint: This will give a player a hint of what positions on the board are available to make a move. It also reminds user of what commands are available.\r\n" +
-                        "undo: Undo a move (Go back to a previous move).\r\n" +
-                        "redo: Redo a move (Available when the board is not at the latest state).\r\n" +
-                        "quit: Quit the game without saving."
-                    );
+                    Console.WriteLine(GlobalCommends);
                     return DisplayMenu();
                 default:
+                    Console.WriteLine("Bye!");
                     return null;
             }
         }
 
         public GameOperator startNewGame()
         {
-            // TODO: prompt "choose game"   
+            // (not urgent) TODO: prompt "choose game"   
             return new TreblecrossOperator();
         }
 
@@ -77,18 +66,10 @@ namespace Treblecross
                 GameMode gameMode = reuslt.Item1;
                 Player[] players = reuslt.Item2;
                 Board board = reuslt.Item3;
-                // TODO: Load game type  
+                // (not urgent) TODO: Load game type  
                 gameOp = new TreblecrossOperator(gameMode, players, board);
             }
             return gameOp;
         }
-
-
-        public static bool ValidateGlobalCommend(string cmd)
-        {
-            // might also have to accept argument for custom rule (maybe a regexr)
-            return Enum.TryParse<GlobalCommend>(cmd, out _);
-        }
-
     }
 }

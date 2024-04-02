@@ -22,6 +22,7 @@ namespace Treblecross
         public string Print()
         {
             // ANSI code
+            // char.TryParse()
             return $"\u001b[38;5;{(int)Colour}m{Mark}\u001b[0m";
         }
 
@@ -39,6 +40,7 @@ namespace Treblecross
 
     public class Player
     {
+        public int Id => this.GetHashCode();
         public string Name { get; }
         public PlayerType PlayerType { get; }
         public Piece Piece { get; }
@@ -49,7 +51,7 @@ namespace Treblecross
             PlayerType = playerType;
             if (PlayerType == PlayerType.Cpu)
             {
-                Name += "(cpu)";
+                Name += " (cpu)";
             }
 
             Piece = piece;
