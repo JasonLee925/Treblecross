@@ -10,18 +10,12 @@ namespace Treblecross
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-
-            // Piece piece = new Piece('X', ConsoleColor.DarkGreen);
-            // Player player = new Player("Kim", PlayerType.Human, piece);
-            // Console.WriteLine(player.ToString());
-            Console.WriteLine(ProgramEngine.ValidateGlobalCommend("save"));
-            Console.WriteLine(ProgramEngine.ValidateGlobalCommend("asdfasd"));
+            // Console.WriteLine(ProgramEngine.ValidateGameCommend("save"));
+            // Console.WriteLine(ProgramEngine.ValidateGameCommend("asdfasd"));
 
             ProgramEngine pe = new ProgramEngine();
             Delegate fn = pe.DisplayMenu();
             if (fn == null) return;
-            
             var opt = fn.DynamicInvoke() ?? new TreblecrossOperator();
             GameOperator gameOp =  (GameOperator) opt;
             gameOp.Start();
