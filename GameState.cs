@@ -22,7 +22,11 @@ namespace Treblecross
 
         public void Redo()
         {
-            gameStateHistory.GetNext();
+            GameState currentState = gameStateHistory.GetCurrentState();
+            if (currentState.State != State)
+                gameStateHistory.GetNext();
+            else
+                Console.WriteLine("You are on the most updated move.");
         }
 
         public void Undo()
@@ -66,18 +70,19 @@ namespace Treblecross
 
         public void AddHistory(GameState history)
         {
-
+            StateHistory.Add(history);
         }
         
         public GameState GetPrevious()
         {
-            GameState previousState = StateHistory[StateHistory.Count - 1];
+            GameState previousState = StateHistory[StateHistory.Count - 2];
             return previousState;
         }
 
         public GameState GetNext()
         {
-            return null;
+            GameState nextState = StateHistory[StateHistory.Count + 2];
+            return nextState;
         }
     }
 }
