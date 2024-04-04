@@ -36,6 +36,7 @@ namespace Treblecross
                     Console.WriteLine("[{0}]", string.Join(", ", Common<string>.Convert1dArray(displayedAry)));
                     return;
                 }
+                displayedAry = new string[CurrentState.State.GetLength(0), CurrentState.State.GetLength(1)];
                 for (int i=0; i < CurrentState.State.GetLength(1); i++) {
                     if (CurrentState.State[0, i] != 0) {
                         displayedAry[0, i] = CurrentState.Player.Piece.Print();

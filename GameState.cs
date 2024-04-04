@@ -2,12 +2,12 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Treblecross
 {
-    
     public class GameState {
 
         public int[,] State;
         public Player Player;
         GameStateHistory gameStateHistory = GameStateHistory.Instance;
+
 
         public GameState(int[,] state)
         {
@@ -20,30 +20,39 @@ namespace Treblecross
             State = state;
         }
 
-        public void Redo()
+        public GameState Redo()
         {
-            GameState currentState = gameStateHistory.GetCurrentState();
-            if (currentState.State != State)
-                gameStateHistory.GetNext();
+            GameState latestState = gameStateHistory.GetLatestState();
+            if (latestState.State != State)
+            {
+                gameStateHistory.Pointer = gameStateHistory.GetNext();
+                return gameStateHistory.Pointer;
+            }
             else
+            {
+                gameStateHistory.Pointer = latestState;
                 Console.WriteLine("You are on the most updated move.");
+            }
+            return latestState;
         }
 
-        public void Undo()
+        public GameState Undo()
         {
-            gameStateHistory.GetPrevious();
+            gameStateHistory.Pointer = gameStateHistory.GetPrevious();
+            return gameStateHistory.Pointer;
         }
     }
-
 
     //singleton class
     public class GameStateHistory
     {
         private static GameStateHistory _instance;
         private List<GameState> StateHistory;
+        public GameState Pointer;
 
         private GameStateHistory()
         {
+            StateHistory = new List<GameState>();
         }
 
         public static GameStateHistory Instance
@@ -57,32 +66,48 @@ namespace Treblecross
             }
         }
 
-        public void DoGameStateHistoryOperation()
-        {
-            Console.WriteLine("GameStateHistory operation");
+        /// <summary>
+        /// For initial calling.
+        /// </summary>
+        /// <param name="state"></param>
+        public void ResetPointer(GameState state) {
+            StateHistory.Add(state);
+            Pointer = state;
         }
 
-        public GameState GetCurrentState()
+        public GameState GetLatestState()
         {
-            GameState currentState = StateHistory[StateHistory.Count];
+            GameState currentState = StateHistory[StateHistory.Count -1];
             return currentState;
         }
 
-        public void AddHistory(GameState history)
+        public void AddHistory(GameState state)
         {
-            StateHistory.Add(history);
+            int idx = StateHistory.IndexOf(Pointer);
+            if (idx == -1) {
+                return;
+            }
+
+            StateHistory.RemoveRange(idx + 1, StateHistory.Count - idx - 1);
+            Pointer = state;
+            StateHistory.Add(state);
         }
         
         public GameState GetPrevious()
         {
-            GameState previousState = StateHistory[StateHistory.Count - 2];
+            GameState previousState = StateHistory[StateHistory.IndexOf(Pointer) - 2]; //-2
             return previousState;
         }
 
         public GameState GetNext()
         {
-            GameState nextState = StateHistory[StateHistory.Count + 2];
+            GameState nextState = StateHistory[StateHistory.IndexOf(Pointer) + 2]; // +2
             return nextState;
         }
+
+        public bool Contains(GameState state) { 
+            return StateHistory.Contains(state);
+        }
+
     }
 }

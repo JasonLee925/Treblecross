@@ -58,6 +58,7 @@ namespace Treblecross
             }
             this.players = players;
             this.board = board;
+            GameStateHistory.Instance.ResetPointer(board.CurrentState);
         }
 
         protected void init()
@@ -83,6 +84,7 @@ namespace Treblecross
                 Console.WriteLine("[Game] What is your board size? (Enter a number that is <=5) ");
             } while (!int.TryParse(Console.ReadLine(), out size) || size <= 5);
             board = new Board(1, size);
+            GameStateHistory.Instance.ResetPointer(board.CurrentState);
             board.Draw();
         }
 
@@ -124,6 +126,8 @@ namespace Treblecross
                 // human player
                 state = makeMove(player);
             }
+
+            GameStateHistory.Instance.AddHistory(state);
 
             // 2. update board
             updateBoard(state);
@@ -215,13 +219,12 @@ namespace Treblecross
                     state[0, move] = player.Id; // update
                     return new GameState(player, state);
                 case GameCommend.undo:
-                    board.CurrentState.Undo();
-                    // TODO: and then?
-                    break;
+                    board.Update(board.CurrentState.Undo());
+                    GameState newMove = makeMove(player);
+                    return newMove;
                 case GameCommend.redo:
-                    board.CurrentState.Redo();
-                    // TODO: and then?
-                    break;
+                    board.Update(board.CurrentState.Redo());
+                    return makeMove(player);
                 case GameCommend.hint:
                     getHint();
                     return makeMove(player);

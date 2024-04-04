@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\n11514256\\Desktop\\assessment2\\Treblecross\\Treblecross.csproj": {}
+    "C:\\Users\\n11514256\\Desktop\\new\\Treblecross.csproj": {}
   },
   "projects": {
-    "C:\\Users\\n11514256\\Desktop\\assessment2\\Treblecross\\Treblecross.csproj": {
+    "C:\\Users\\n11514256\\Desktop\\new\\Treblecross.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\n11514256\\Desktop\\assessment2\\Treblecross\\Treblecross.csproj",
+        "projectUniqueName": "C:\\Users\\n11514256\\Desktop\\new\\Treblecross.csproj",
         "projectName": "Treblecross",
-        "projectPath": "C:\\Users\\n11514256\\Desktop\\assessment2\\Treblecross\\Treblecross.csproj",
+        "projectPath": "C:\\Users\\n11514256\\Desktop\\new\\Treblecross.csproj",
         "packagesPath": "C:\\Users\\n11514256\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\n11514256\\Desktop\\assessment2\\Treblecross\\obj\\",
+        "outputPath": "C:\\Users\\n11514256\\Desktop\\new\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\n11514256\\AppData\\Roaming\\NuGet\\NuGet.Config",
