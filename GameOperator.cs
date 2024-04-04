@@ -1,10 +1,13 @@
-using System.Threading;
-
 namespace Treblecross
 {
+    public enum GameType 
+    {
+        Treblecross = 0,
+        // Reversi = 1,
+    }
+
     public enum GameMode
     {
-        None = -1, // temporary
         PvE = 0,
         PvP = 1,
     }
@@ -20,7 +23,7 @@ namespace Treblecross
         unknown = -1, // for commend validation
     }
 
-    public delegate bool ValidateCommendCallback(string cmd);
+    public delegate bool ValidateMoveCallback(string cmd);
 
     public abstract class GameOperator
     {
@@ -55,12 +58,6 @@ namespace Treblecross
             }
             this.players = players;
             this.board = board;
-
-            // x, y = Readline();
-
-            // update2DArray = validateMove(x, y)
-            // Gamestate state = new Gamestate(update2DArray) // create Gamestate
-            // updateBoard(state);
         }
 
         protected void init()
@@ -79,13 +76,14 @@ namespace Treblecross
                 players.SetValue(Player.CreateHumanPlayer(), 1);
             }
 
-            // prompt "board size"
-            int dx = 10;
+            // create board
+            int size = 10;
             do
             {
                 Console.WriteLine("[Game] What is your board size? (Enter a number that is <=5) ");
-            } while (!int.TryParse(Console.ReadLine(), out dx) || dx <= 5);
-            board = new Board(1, dx);
+            } while (!int.TryParse(Console.ReadLine(), out size) || size <= 5);
+            board = new Board(1, size);
+            board.Draw();
         }
 
         public void Start()
@@ -146,15 +144,15 @@ namespace Treblecross
             next = true;
         }
 
-        protected static GameCommend validateGameCommend(string cmd, ValidateCommendCallback vCmdCallabck)
+        protected static GameCommend validateGameCommend(string cmd, ValidateMoveCallback vMoveCallabck)
         {
-            if (vCmdCallabck(cmd))
+            if (vMoveCallabck(cmd))
             {
                 return GameCommend.move;
-            }
+            } 
 
             GameCommend gcmd;
-            if (Enum.TryParse<GameCommend>(cmd, out gcmd))
+            if (!int.TryParse(cmd, out _) & Enum.TryParse<GameCommend>(cmd, out gcmd)) // if it's not a number and is one of the GameCommends
             {
                 return gcmd;
             }
@@ -177,11 +175,14 @@ namespace Treblecross
 
         public TreblecrossOperator()
         {
-            Console.WriteLine("Creating Treblecross ... ");
+            Console.WriteLine("[Game] Creating Treblecross ... ");
             base.init();
         }
 
-        public TreblecrossOperator(GameMode mode, Player[] players, Board board) : base(mode, players, board) { }
+        public TreblecrossOperator(GameMode mode, Player[] players, Board board) : base(mode, players, board) { 
+            Console.WriteLine("[Game] Creating Treblecross ... ");
+            this.board.Draw();
+        }
 
 
         protected override GameState makeRandomMove(Player player)
@@ -201,7 +202,7 @@ namespace Treblecross
         protected override GameState makeMove(Player player)
         {
             int move = -1;
-            Console.Write("[Game] Enter a global command or a number from 1 ~ {0}: ", board.CurrentState.State.GetLength(1));
+            Console.Write("[Game] Enter a game command or a number from 1 ~ {0}: ", board.CurrentState.State.GetLength(1));
             string cmd = Console.ReadLine();
             GameCommend gcmd = validateGameCommend(cmd, validateMove);
 
@@ -225,11 +226,8 @@ namespace Treblecross
                     getHint();
                     return makeMove(player);
                 case GameCommend.save:
-                    using (GameFile file = new GameFile())
-                    {
-                        // TODO: file.Save(GameState state, GameOperator gameOp);
-                    }
-                    break;
+                    saveGame();
+                    return makeMove(player);
                 case GameCommend.quit:
                     end();
                     break;
@@ -240,9 +238,54 @@ namespace Treblecross
             return null;
         }
 
+        private void saveGame() {
+            using (GameFile file = new GameFile())
+            {
+                GameData gamedata = new GameData();
+                BoardInfo boardinfo = new BoardInfo();
+                boardinfo.State = Common<int>.Convert2DArrayTo2DList(board.CurrentState.State);
+                boardinfo.Player = board.CurrentState.Player.Id;
+                boardinfo.Size = board.Size;
+                gamedata.Board = boardinfo;
+
+                PieceInfo[] pieceInfos = new PieceInfo[players.Length];
+                for (int i = 0; i < pieceInfos.Length; i++)
+                {
+                    Player p = players[i];
+                    PieceInfo pieceInfo = new PieceInfo();
+                    pieceInfo.Id = p.Piece.Id;
+                    pieceInfo.Mark = p.Piece.Mark;
+                    pieceInfo.Colour = p.Piece.Colour;
+                    pieceInfos[i] = pieceInfo;
+                }
+
+                PlayerInfo[] playerInfos = new PlayerInfo[players.Length];
+                for (int i = 0; i < playerInfos.Length; i++)
+                {
+                    Player p = players[i];
+                    PlayerInfo playerInfo = new PlayerInfo();
+                    playerInfo.Id = p.Id;
+                    playerInfo.Name = p.Name;
+                    playerInfo.Type = p.PlayerType;
+                    playerInfo.Piece = pieceInfos[i];
+                    playerInfos[i] = playerInfo;
+                }
+
+                gamedata.Players = playerInfos.ToList();
+
+                GameInfo gameInfo = new GameInfo();
+                gameInfo.Name = GameId;
+                gameInfo.Mode = Mode;
+                gamedata.Game = gameInfo;
+
+                file.Save(gamedata);
+            }
+        }
+
+
         protected override void updateBoard(GameState state)
         {
-            board.UpdateAndDraw(state);
+            board.Update(state);
         }
 
         protected override bool validateMove(string move)

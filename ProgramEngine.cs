@@ -63,7 +63,7 @@ namespace Treblecross
             GameOperator gameOp;
             using (GameFile file = new GameFile()){
                 var reuslt = file.Load();
-                GameMode gameMode = reuslt.Item1;
+                GameMode gameMode = (GameMode) reuslt.Item1;
                 Player[] players = reuslt.Item2;
                 Board board = reuslt.Item3;
                 // (not urgent) TODO: Load game type  

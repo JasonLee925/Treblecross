@@ -8,24 +8,26 @@
     "net8.0": []
   },
   "packageFolders": {
-    "/Users/user/.nuget/packages/": {}
+    "C:\\Users\\n11514256\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/user/Library/CloudStorage/OneDrive-QueenslandUniversityofTechnology/course/1-2/IFN563/assessment/assessment2/Treblecross/Treblecross.csproj",
+      "projectUniqueName": "C:\\Users\\n11514256\\Desktop\\assessment2\\Treblecross\\Treblecross.csproj",
       "projectName": "Treblecross",
-      "projectPath": "/Users/user/Library/CloudStorage/OneDrive-QueenslandUniversityofTechnology/course/1-2/IFN563/assessment/assessment2/Treblecross/Treblecross.csproj",
-      "packagesPath": "/Users/user/.nuget/packages/",
-      "outputPath": "/Users/user/Library/CloudStorage/OneDrive-QueenslandUniversityofTechnology/course/1-2/IFN563/assessment/assessment2/Treblecross/obj/",
+      "projectPath": "C:\\Users\\n11514256\\Desktop\\assessment2\\Treblecross\\Treblecross.csproj",
+      "packagesPath": "C:\\Users\\n11514256\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\n11514256\\Desktop\\assessment2\\Treblecross\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/user/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\n11514256\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -64,7 +66,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
