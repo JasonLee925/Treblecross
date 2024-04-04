@@ -1,10 +1,4 @@
-﻿using System.Dynamic;
-using System.Globalization;
-using System.Net.Mail;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices;
-
-namespace Treblecross
+﻿namespace Treblecross
 {
     internal class Program
     {

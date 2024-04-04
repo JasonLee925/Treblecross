@@ -1,19 +1,13 @@
-using System.Data;
-
 namespace Treblecross
 {
     public class Board
     {
         private readonly int dimension_x;
         private readonly int dimension_y;
-        private GameState currentState;
-        public GameState CurrentState { 
-                get { return currentState; }  
-                set { 
-                    currentState = value;
-                    Draw(); 
-                } 
-            }
+
+        public int[] Size => [dimension_y, dimension_x];
+
+        public GameState CurrentState { get; set; }
         private string[,] displayedAry {get; set;}
 
         public Board(int x, int y) {
@@ -36,15 +30,15 @@ namespace Treblecross
             //     Console.WriteLine("[Board] Warning: The stored state in board is null, nothing will be drew.");
             //     return;
             // }
-            if (currentState.State.GetLength(0) == 1) {
-                if (currentState.Player == null) {
+            if (CurrentState.State.GetLength(0) == 1) {
+                if (CurrentState.Player == null) {
                     // init
                     Console.WriteLine("[{0}]", string.Join(", ", Common<string>.Convert1dArray(displayedAry)));
                     return;
                 }
-                for (int i=0; i < currentState.State.GetLength(1); i++) {
-                    if (currentState.State[0, i] != 0) {
-                        displayedAry[0, i] = currentState.Player.Piece.Print();
+                for (int i=0; i < CurrentState.State.GetLength(1); i++) {
+                    if (CurrentState.State[0, i] != 0) {
+                        displayedAry[0, i] = CurrentState.Player.Piece.Print();
                     }
                 }
                 Console.WriteLine("[{0}]", string.Join(", ", Common<string>.Convert1dArray(displayedAry)));
@@ -53,13 +47,13 @@ namespace Treblecross
             }
         }
 
-        public void UpdateAndDraw(GameState state) {
-            currentState = state;
+        public void Update(GameState state) {
+            CurrentState = state;
             Draw();
         }
 
         public void Load(GameState state) {
-            UpdateAndDraw(state);
+            Update(state);
         }
 
     }

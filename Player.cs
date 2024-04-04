@@ -3,18 +3,29 @@ namespace Treblecross
     public class Piece
     {
 
-        public readonly char Mark = 'X'; // default: X
+        public readonly char Mark = 'X'; // default: X;
         public readonly ConsoleColor Colour = ConsoleColor.White; // default: white
 
-        public string Label => this.GetHashCode() + Mark.ToString() + ((int)Colour).ToString();
+        public readonly int Id;
+
+        public string Label => this.Id + "-" + Mark.ToString() + "-" + ((int)Colour).ToString();        
 
         public Piece(char mark)
         {
-            Mark = mark;
+            Id = this.GetHashCode();
+            this.Mark = mark;
         }
 
         public Piece(char mark, ConsoleColor colour)
         {
+            Id = this.GetHashCode();
+            Mark = mark;
+            Colour = colour;
+        }
+
+        public Piece(int id, char mark, ConsoleColor colour)
+        {
+            Id = id;
             Mark = mark;
             Colour = colour;
         }
@@ -22,13 +33,8 @@ namespace Treblecross
         public string Print()
         {
             // ANSI code
-            // char.TryParse()
+            // TODO: char.TryParse()
             return $"\u001b[38;5;{(int)Colour}m{Mark}\u001b[0m";
-        }
-
-        public override string ToString()
-        {
-            return "[Piece] Mark: " + Print() + " Label: " + Label;
         }
     }
 
@@ -40,13 +46,28 @@ namespace Treblecross
 
     public class Player
     {
-        public int Id => this.GetHashCode();
+        public readonly int Id;
         public string Name { get; }
         public PlayerType PlayerType { get; }
         public Piece Piece { get; }
+        public string Label => this.Id + "-" + Name + "-" + PlayerType.ToString();        
 
         public Player(string name, PlayerType playerType, Piece piece)
         {
+            Id = this.GetHashCode();
+            Name = name;
+            PlayerType = playerType;
+            if (PlayerType == PlayerType.Cpu)
+            {
+                Name += " (cpu)";
+            }
+
+            Piece = piece;
+        }
+
+        public Player(int id, string name, PlayerType playerType, Piece piece)
+        {
+            Id = id;
             Name = name;
             PlayerType = playerType;
             if (PlayerType == PlayerType.Cpu)
@@ -83,9 +104,9 @@ namespace Treblecross
         private static Player createPlayer (Piece piece) {
             string name;
             do {
-                Console.WriteLine("[Game] Enter player name? (connot be empty)");
+                Console.WriteLine("[Game] Enter player name? (empty, '-', or ',' is not allowed)");
                 name = Console.ReadLine();
-            } while (name == null || name == "");
+            } while (name == null || name == "" || name.Contains('-') || name.Contains(','));
             
             return new Player(name, PlayerType.Human, piece);
         }
