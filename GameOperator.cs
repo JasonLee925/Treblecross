@@ -192,13 +192,17 @@ namespace Treblecross
         protected override GameState makeRandomMove(Player player)
         {
             int[,] state = (int[,])board.CurrentState.State.Clone();
-            for (int j = 0; j < state.GetLength(1); j++)
+            Random random = new Random();
+
+            int move;
+            do
             {
-                if (state[0, j] == 0) {
-                    state[0, j] = player.Id; // update
-                    break;
-                }
+                move = random.Next(state.GetLength(1)); // Generate a random column index
             }
+            while (state[0, move] != 0);
+
+            state[0, move] = player.Id; // update
+
             Thread.Sleep(1000);
             return new GameState(player, state);
         }
@@ -230,16 +234,16 @@ namespace Treblecross
                     return makeMove(player);
                 case GameCommend.save:
                     saveGame();
-                    string quit = "n";
+                    string idContinue = "n";
                     do{
                         Log.Info("Game", "Continue? y/n");
-                        quit = Console.ReadLine();
-                        if (quit == "y") {
+                        idContinue = Console.ReadLine();
+                        if (idContinue == "n") {
                             end();
                         } else {
                             break;
                         }
-                    } while(quit != "y" | quit != "n");
+                    } while(idContinue != "y" | idContinue != "n");
                     return makeMove(player);
                 case GameCommend.quit:
                     end();
@@ -265,10 +269,11 @@ namespace Treblecross
                 for (int i = 0; i < pieceInfos.Length; i++)
                 {
                     Player p = players[i];
-                    PieceInfo pieceInfo = new PieceInfo();
-                    pieceInfo.Id = p.Piece.Id;
-                    pieceInfo.Mark = p.Piece.Mark;
-                    pieceInfo.Colour = p.Piece.Colour;
+                    PieceInfo pieceInfo = new PieceInfo() {
+                        Id = p.Piece.Id,
+                        Mark = p.Piece.Mark,
+                        Colour = p.Piece.Colour,
+                    };
                     pieceInfos[i] = pieceInfo;
                 }
 
@@ -276,19 +281,21 @@ namespace Treblecross
                 for (int i = 0; i < playerInfos.Length; i++)
                 {
                     Player p = players[i];
-                    PlayerInfo playerInfo = new PlayerInfo();
-                    playerInfo.Id = p.Id;
-                    playerInfo.Name = p.Name;
-                    playerInfo.Type = p.PlayerType;
-                    playerInfo.Piece = pieceInfos[i];
+                    PlayerInfo playerInfo = new PlayerInfo() {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Type = p.PlayerType,
+                        Piece = pieceInfos[i],
+                    };
                     playerInfos[i] = playerInfo;
                 }
 
                 gamedata.Players = playerInfos.ToList();
 
-                GameInfo gameInfo = new GameInfo();
-                gameInfo.Name = GameId;
-                gameInfo.Mode = Mode;
+                GameInfo gameInfo = new GameInfo() {
+                    Name = GameId,
+                    Mode = Mode,
+                };
                 gamedata.Game = gameInfo;
 
                 file.Save(gamedata);
