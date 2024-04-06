@@ -31,20 +31,24 @@ namespace Treblecross
 
     public static class Log
     {
-        public static void PrintInfo(string msg)
+        public static void Info(string msg)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[System] {0}", msg);
-            Console.ResetColor();
+            Info("System", msg);
         }
 
-        public static void PrintWarning(string msg) {
+        public static void Info(string tag, string msg) {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] {1}", tag, msg);
+            Console.ResetColor();
+        } 
+        
+        public static void Warning(string msg) {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("[System] {0}", msg); 
             Console.ResetColor();
         }
 
-        public static void PrintError(string msg, Exception ex) {
+        public static void Error(string msg, Exception ex) {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[System] {0}, Error: {1}", msg, ex.Message); 
             Console.ResetColor();
