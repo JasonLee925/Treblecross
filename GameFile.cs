@@ -16,7 +16,7 @@ namespace Treblecross
         public void Save(GameData gameData) {
             //DateTime now = DateTime.Now;
             File.WriteAllText("Gamedata.json", JsonSerializer.Serialize(gameData));
-            Log.PrintInfo("File Saved.");
+            Log.Info("File Saved.");
         }
 
 
@@ -27,7 +27,7 @@ namespace Treblecross
 
                 string filePath;
                 do {
-                    Console.Write("[Menu] Enter your file path: ");
+                    Log.Info("Menu", "Enter your file path: ");
                     filePath = Console.ReadLine();
                 } while (!File.Exists(filePath));
 
@@ -43,7 +43,7 @@ namespace Treblecross
                 return (mode, players, board);
 
             } catch (Exception ex) {
-                Log.PrintError("Failed at loading file.", ex);
+                Log.Error("Failed at loading file.", ex);
             }
 
             return (null, null, null);

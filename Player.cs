@@ -83,7 +83,7 @@ namespace Treblecross
         /// </summary>
         /// <returns>A Player object</returns>
         public static Player CreateComputerPlayer() {
-            Piece piece = new Piece('X', ConsoleColor.White);
+            Piece piece = new Piece('X', ConsoleColor.Red);
             return new Player("CPU", PlayerType.Cpu, piece);
         }
 
@@ -93,18 +93,18 @@ namespace Treblecross
         /// <returns>A Player object</returns>
         public static Player CreateHumanPlayer() {
             Piece piece = createPeice(false);
-            return createPlayer(piece);
+            return createHumanPlayer(piece);
         }
 
         public static Player CreateHumanPlayerWithCustomPeice() {
             Piece piece = createPeice(true);
-            return createPlayer(piece);
+            return createHumanPlayer(piece);
         }
 
-        private static Player createPlayer (Piece piece) {
+        private static Player createHumanPlayer (Piece piece) {
             string name;
             do {
-                Console.WriteLine("[Game] Enter player name? (empty, '-', or ',' is not allowed)");
+                Log.Info("Game", "Enter player name? (empty, '-', or ',' is not allowed)");
                 name = Console.ReadLine();
             } while (name == null || name == "" || name.Contains('-') || name.Contains(','));
             
@@ -118,11 +118,11 @@ namespace Treblecross
 
             if (customPeice) {
                 do {
-                    Console.WriteLine("[Game] Enter a mark representing player-1? (example: X or O) ");
+                    Log.Info("Game" ,"Enter a mark representing player-1? (example: X or O) ");
                 } while (!char.TryParse(Console.ReadLine(), out mark));
 
                 do {
-                    Console.WriteLine("[Game] Enter a color representing player-1? ");
+                    Log.Info("Game","Enter a color representing player-1? ");
                     Console.WriteLine("Options: \r\n" +
                         "0: black\r\n" + "9: blue\r\n" + "10: green\r\n" + "12: red\r\n" + "14: yellow\r\n" + "15: white"
                         );

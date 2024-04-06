@@ -38,11 +38,11 @@ namespace Treblecross
             bool valid = false;
             do
             {
-                Console.WriteLine("[Game] Choose mode? (0: PvE, 1: PvP) ");
+                Log.Info("Game", "Choose mode? (0: PvE, 1: PvP) ");
                 valid = int.TryParse(Console.ReadLine(), out mode);
                 if (!Enum.IsDefined(typeof(GameMode), mode) || !valid)
                 {
-                    Console.WriteLine("Wrong GameMode, please re-enter!");
+                    Log.Info("Game", "Wrong GameMode, please re-enter!");
                     valid = false;
                 }
             } while (!valid);
@@ -58,7 +58,7 @@ namespace Treblecross
             }
             this.players = players;
             this.board = board;
-            GameStateHistory.Instance.ResetPointer(board.CurrentState);
+            GameStateHistory.Instance.Init(board.CurrentState);
         }
 
         protected void init()
@@ -73,7 +73,7 @@ namespace Treblecross
             {
                 // PvP
                 players.SetValue(Player.CreateHumanPlayer(), 0);
-                Console.WriteLine("[Game] Done, now create another player.");
+                Log.Info("Game", "Done, now create another player.");
                 players.SetValue(Player.CreateHumanPlayer(), 1);
             }
 
@@ -81,10 +81,10 @@ namespace Treblecross
             int size = 10;
             do
             {
-                Console.WriteLine("[Game] What is your board size? (Enter a number that is <=5) ");
+                Log.Info("Game", "What is your board size? (Enter a number that is <=5)");
             } while (!int.TryParse(Console.ReadLine(), out size) || size <= 5);
             board = new Board(1, size);
-            GameStateHistory.Instance.ResetPointer(board.CurrentState);
+            GameStateHistory.Instance.Init(board.CurrentState);
             board.Draw();
         }
 
@@ -95,7 +95,7 @@ namespace Treblecross
             bool next = true;
             while (next)
             {
-                Console.WriteLine("[Game] {0}'s turn!", players[idx].Name);
+                Log.Info("Game", players[idx].Name + "'s turn!");
                 makeMove(players[idx], ref next);
                 if (idx >= players.Length - 1)
                 {
@@ -137,9 +137,9 @@ namespace Treblecross
             {
                 Player winner = state.Player;
                 if (winner.PlayerType == PlayerType.Cpu) {
-                    Console.WriteLine("[Game] The winner is CPU. Speechless.");
+                    Log.Info("Game", "The winner is CPU. Speechless.");
                 } else {
-                    Console.WriteLine("[Game] The winner is {0}. Congrats!", state.Player.Name);
+                    Log.Info("Game", "The winner is "+ state.Player.Name +". Congrats!");
                 }
                 next = false;
                 return;
@@ -179,12 +179,12 @@ namespace Treblecross
 
         public TreblecrossOperator()
         {
-            Console.WriteLine("[Game] Creating Treblecross ... ");
+            Log.Info("Game" + "Creating Treblecross ... ");
             base.init();
         }
 
         public TreblecrossOperator(GameMode mode, Player[] players, Board board) : base(mode, players, board) { 
-            Console.WriteLine("[Game] Creating Treblecross ... ");
+            Log.Info("Game", "Creating Treblecross ... ");
             this.board.Draw();
         }
 
@@ -206,7 +206,7 @@ namespace Treblecross
         protected override GameState makeMove(Player player)
         {
             int move = -1;
-            Console.Write("[Game] Enter a game command or a number from 1 ~ {0}: ", board.CurrentState.State.GetLength(1));
+            Log.Info("Game", "Enter a game command or a number from 1 ~ "+ board.CurrentState.State.GetLength(1).ToString()+ ": ");
             string cmd = Console.ReadLine();
             GameCommend gcmd = validateGameCommend(cmd, validateMove);
 
@@ -230,12 +230,22 @@ namespace Treblecross
                     return makeMove(player);
                 case GameCommend.save:
                     saveGame();
+                    string quit = "n";
+                    do{
+                        Log.Info("Game", "Continue? y/n");
+                        quit = Console.ReadLine();
+                        if (quit == "y") {
+                            end();
+                        } else {
+                            break;
+                        }
+                    } while(quit != "y" | quit != "n");
                     return makeMove(player);
                 case GameCommend.quit:
                     end();
                     break;
                 default:
-                    Console.WriteLine("[Game] Invalid command/move.");
+                    Log.Info("Game", "Invalid command/move.");
                     return makeMove(player);
             }
             return null;
@@ -359,7 +369,7 @@ namespace Treblecross
 
         protected override void end()
         {
-            Console.WriteLine("Bye!");
+            Log.Info("Game", "Bye!");
             Environment.Exit(1);
         }
 

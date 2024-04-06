@@ -26,11 +26,11 @@ namespace Treblecross
 
             do
             {
-                Console.WriteLine("[Menu] Choose an action? (0: Start a new game, 1: Load game, 2: Check global commands, 3: Quit!)");
+                Log.Info("Menu", "Choose an action? (0: Start a new game, 1: Load game, 2: Check global commands, 3: Quit!)");
                 valid = int.TryParse(Console.ReadLine(), out action);
                 if (!Enum.IsDefined(typeof(MenuAction), action) || !valid)
                 {
-                    Console.WriteLine("Wrong action, please re-enter!");
+                    Log.Info("Menu", "Wrong action, please re-enter!");
                     valid = false;
                 }
             } while (!valid);
@@ -42,12 +42,11 @@ namespace Treblecross
                 case MenuAction.LoadGame:
                     return new MenuCallback(loadGame);
                 case MenuAction.AvailableCommends:
-                    // prompt available commends
-                    Console.WriteLine("[Menu] In the game, there are some global commands that are available to use:");
+                    Log.Info("Menu","In the game, there are some global commands that are available to use:");
                     Console.WriteLine(GlobalCommends);
                     return DisplayMenu();
                 default:
-                    Console.WriteLine("Bye!");
+                    Log.Info("Menu", "Bye!");
                     return null;
             }
         }

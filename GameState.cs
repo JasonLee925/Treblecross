@@ -25,21 +25,27 @@ namespace Treblecross
             GameState latestState = gameStateHistory.GetLatestState();
             if (latestState.State != State)
             {
-                gameStateHistory.Pointer = gameStateHistory.GetNext();
-                return gameStateHistory.Pointer;
+                GameState state = gameStateHistory.GetNext();
+                GameStateHistory.Instance.PointTo(state);
+                return state;
             }
             else
             {
-                gameStateHistory.Pointer = latestState;
-                Console.WriteLine("You are on the most updated move.");
+                Log.Info("Game", "You are on the most updated move!");
             }
             return latestState;
         }
 
         public GameState Undo()
         {
-            gameStateHistory.Pointer = gameStateHistory.GetPrevious();
-            return gameStateHistory.Pointer;
+            GameState state = gameStateHistory.GetPrevious();
+            if (state == null) {
+                Log.Info("Game", "There no previous state found in history!");
+                return this;
+            }
+
+            GameStateHistory.Instance.PointTo(state);
+            return state;
         }
     }
 
@@ -48,7 +54,7 @@ namespace Treblecross
     {
         private static GameStateHistory _instance;
         private List<GameState> StateHistory;
-        public GameState Pointer;
+        private GameState pointer;
 
         private GameStateHistory()
         {
@@ -70,9 +76,13 @@ namespace Treblecross
         /// For initial calling.
         /// </summary>
         /// <param name="state"></param>
-        public void ResetPointer(GameState state) {
+        public void Init(GameState state) {
             StateHistory.Add(state);
-            Pointer = state;
+            pointer = state;
+        }
+
+        public void PointTo(GameState state) {
+            pointer = state;
         }
 
         public GameState GetLatestState()
@@ -83,25 +93,32 @@ namespace Treblecross
 
         public void AddHistory(GameState state)
         {
-            int idx = StateHistory.IndexOf(Pointer);
+            int idx = StateHistory.IndexOf(pointer);
             if (idx == -1) {
+                Log.Error("Fail at adding state to history", new Exception("pointer is not found in the history"));
                 return;
             }
 
-            StateHistory.RemoveRange(idx + 1, StateHistory.Count - idx - 1);
-            Pointer = state;
+            StateHistory.RemoveRange(idx + 1, StateHistory.Count - 1 - idx);
+            pointer = state;
             StateHistory.Add(state);
         }
         
         public GameState GetPrevious()
         {
-            GameState previousState = StateHistory[StateHistory.IndexOf(Pointer) - 2]; //-2
-            return previousState;
+            try { 
+                GameState previousState = StateHistory[StateHistory.IndexOf(pointer) - 2]; 
+                pointer = previousState;
+                return previousState;
+            } catch (Exception) {
+                return null;
+            }
         }
 
         public GameState GetNext()
         {
-            GameState nextState = StateHistory[StateHistory.IndexOf(Pointer) + 2]; // +2
+            GameState nextState = StateHistory[StateHistory.IndexOf(pointer) + 2];
+            pointer = nextState; 
             return nextState;
         }
 
