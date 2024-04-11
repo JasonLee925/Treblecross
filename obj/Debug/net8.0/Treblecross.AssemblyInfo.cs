@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Treblecross")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c1be3ed984b48e75da545e2e1df35fce97554b50")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+45c79942190a68045071c26b1b8d3b87236782d3")]
 [assembly: System.Reflection.AssemblyProductAttribute("Treblecross")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Treblecross")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
