@@ -127,12 +127,13 @@ namespace Treblecross
                 state = makeMove(player);
             }
 
-            GameStateHistory.Instance.AddHistory(state);
+            // 2. update game state history
+            updateStateHistory(state);
 
-            // 2. update board
+            // 3. update board
             updateBoard(state);
 
-            // 3. determine winner
+            // 4. determine winner
             if (determineWinner(state))
             {
                 Player winner = state.Player;
@@ -164,10 +165,17 @@ namespace Treblecross
             return GameCommend.unknown; // represents invalid 
         }
 
+        private void updateStateHistory(GameState state){
+            GameStateHistory.Instance.AddHistory(state);
+        }
+
+        protected void updateBoard(GameState state){
+            board.Update(state);
+        }
+
         protected abstract GameState makeRandomMove(Player player);
         protected abstract GameState makeMove(Player player);
         protected abstract bool validateMove(string move);
-        protected abstract void updateBoard(GameState state);
         protected abstract bool determineWinner(GameState state);
         protected abstract void end();
         protected abstract void saveGame();
@@ -224,11 +232,11 @@ namespace Treblecross
                     state[0, move] = player.Id; // update
                     return new GameState(player, state);
                 case GameCommend.undo:
-                    board.Update(board.CurrentState.Undo());
+                    updateBoard(board.CurrentState.Undo());
                     GameState newMove = makeMove(player);
                     return newMove;
                 case GameCommend.redo:
-                    board.Update(board.CurrentState.Redo());
+                    updateBoard(board.CurrentState.Redo());
                     return makeMove(player);
                 case GameCommend.hint:
                     getHint();
@@ -301,12 +309,6 @@ namespace Treblecross
 
                 file.Save(gamedata);
             }
-        }
-
-
-        protected override void updateBoard(GameState state)
-        {
-            board.Update(state);
         }
 
         protected override bool validateMove(string move)
