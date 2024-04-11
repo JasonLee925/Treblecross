@@ -154,7 +154,7 @@ namespace Treblecross
                             if (idContinue == "n") {
                                 end();
                             } else {
-                                break;
+                                return;
                             }
                         } while(idContinue != "y" | idContinue != "n");
                         makeMove(player, ref next);
