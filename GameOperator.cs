@@ -170,6 +170,7 @@ namespace Treblecross
         protected abstract void updateBoard(GameState state);
         protected abstract bool determineWinner(GameState state);
         protected abstract void end();
+        protected abstract void saveGame();
         protected abstract void getHint();
     }
 
@@ -255,7 +256,7 @@ namespace Treblecross
             return null;
         }
 
-        private void saveGame() {
+        protected override void saveGame() {
             using (GameFile file = new GameFile())
             {
                 GameData gamedata = new GameData();
