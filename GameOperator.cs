@@ -116,7 +116,7 @@ namespace Treblecross
         private void makeMove(Player player, ref bool next)
         {
             // 1. make move
-            GameState state;
+            GameState state = null;
             if (player.PlayerType == PlayerType.Cpu)
             {
                 state = makeRandomMove(player);
@@ -124,7 +124,49 @@ namespace Treblecross
             else
             {
                 // human player
-                state = makeMove(player);
+                Log.Info("Game", "Enter a game command or a number from 1 ~ "+ board.CurrentState.State.GetLength(1).ToString()+ ": ");
+                string cmd = Console.ReadLine();
+                GameCommend gcmd = validateGameCommend(cmd, validateMove);
+
+                switch (gcmd)
+                {
+                    case GameCommend.move:
+                        state = makeMove(player, cmd);
+                        break;  
+                    case GameCommend.undo:
+                        updateBoard(board.CurrentState.Undo());
+                        makeMove(player, ref next);
+                        return;
+                    case GameCommend.redo:
+                        updateBoard(board.CurrentState.Redo());
+                        makeMove(player, ref next);
+                        return;
+                    case GameCommend.hint:
+                        getHint();
+                        makeMove(player, ref next);
+                        return;
+                    case GameCommend.save:
+                        saveGame();
+                        string idContinue = "n";
+                        do{
+                            Log.Info("Game", "Continue? y/n");
+                            idContinue = Console.ReadLine();
+                            if (idContinue == "n") {
+                                end();
+                            } else {
+                                break;
+                            }
+                        } while(idContinue != "y" | idContinue != "n");
+                        makeMove(player, ref next);
+                        return;
+                    case GameCommend.quit:
+                        end();
+                        return;
+                    default:
+                        Log.Info("Game", "Invalid command/move.");
+                        makeMove(player, ref next);
+                        return;
+                }
             }
 
             // 2. update game state history
@@ -165,16 +207,18 @@ namespace Treblecross
             return GameCommend.unknown; // represents invalid 
         }
 
-        private void updateStateHistory(GameState state){
+        private void updateStateHistory(GameState? state){
+            // (not urgent) TODO: address null input
             GameStateHistory.Instance.AddHistory(state);
         }
 
-        protected void updateBoard(GameState state){
+        protected void updateBoard(GameState? state){
+            // (not urgent) TODO: address null input
             board.Update(state);
         }
 
         protected abstract GameState makeRandomMove(Player player);
-        protected abstract GameState makeMove(Player player);
+        protected abstract GameState makeMove(Player player, string move);
         protected abstract bool validateMove(string move);
         protected abstract bool determineWinner(GameState state);
         protected abstract void end();
@@ -216,52 +260,13 @@ namespace Treblecross
             return new GameState(player, state);
         }
 
-        protected override GameState makeMove(Player player)
+        protected override GameState makeMove(Player player, string move)
         {
-            int move = -1;
-            Log.Info("Game", "Enter a game command or a number from 1 ~ "+ board.CurrentState.State.GetLength(1).ToString()+ ": ");
-            string cmd = Console.ReadLine();
-            GameCommend gcmd = validateGameCommend(cmd, validateMove);
-
-            switch (gcmd)
-            {
-                case GameCommend.move:
-                    move = int.Parse(cmd);
-                    move -= 1 ;
-                    int[,] state = (int[,])board.CurrentState.State.Clone();
-                    state[0, move] = player.Id; // update
-                    return new GameState(player, state);
-                case GameCommend.undo:
-                    updateBoard(board.CurrentState.Undo());
-                    GameState newMove = makeMove(player);
-                    return newMove;
-                case GameCommend.redo:
-                    updateBoard(board.CurrentState.Redo());
-                    return makeMove(player);
-                case GameCommend.hint:
-                    getHint();
-                    return makeMove(player);
-                case GameCommend.save:
-                    saveGame();
-                    string idContinue = "n";
-                    do{
-                        Log.Info("Game", "Continue? y/n");
-                        idContinue = Console.ReadLine();
-                        if (idContinue == "n") {
-                            end();
-                        } else {
-                            break;
-                        }
-                    } while(idContinue != "y" | idContinue != "n");
-                    return makeMove(player);
-                case GameCommend.quit:
-                    end();
-                    break;
-                default:
-                    Log.Info("Game", "Invalid command/move.");
-                    return makeMove(player);
-            }
-            return null;
+            int pos = int.Parse(move);
+            pos -= 1;
+            int[,] state = (int[,])board.CurrentState.State.Clone();
+            state[0, pos] = player.Id; // update
+            return new GameState(player, state);
         }
 
         protected override void saveGame() {
