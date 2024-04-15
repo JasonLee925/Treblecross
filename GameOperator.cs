@@ -81,8 +81,8 @@ namespace Treblecross
             int size = 10;
             do
             {
-                Log.Info("Game", "What is your board size? (Enter a number that is <=5)");
-            } while (!int.TryParse(Console.ReadLine(), out size) || size <= 5);
+                Log.Info("Game", "What is your board size? (Enter a number that is >=5)");
+            } while (!int.TryParse(Console.ReadLine(), out size) || size < 5);
             board = new Board(1, size);
             GameStateHistory.Instance.Init(board.CurrentState);
             board.Draw();
@@ -323,6 +323,7 @@ namespace Treblecross
 
             int[,] stateAry = board.CurrentState.State;
             if (moveInt > stateAry.GetLength(1)) return false;
+            if (moveInt <= 0) return false;
             moveInt -= 1;
             if (stateAry[0, moveInt] != 0) return false;
 
