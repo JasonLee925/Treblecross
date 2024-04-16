@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Treblecross
-build_property.ProjectDir = c:\Users\yikyu\OneDrive\文件\Master of IT\git-repo\Treblecross\
+build_property.ProjectDir = /Users/user/Documents/Code/uni_work/ifn563/Treblecross/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
